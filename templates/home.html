@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block bodycontent %}
+<div class="container">
+    <form class="d-flex" action="{{ url_for('post_link')}}" method="post">
+        <input class="form-control me-2" type="search" placeholder="www.example.com" aria-label="Search" name="link">
+        <button class="btn btn-outline-success" type="submit">Shorten</button>
+    </form>
+</div>
+
+{% endblock %}
+\
