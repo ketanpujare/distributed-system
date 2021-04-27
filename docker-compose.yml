@@ -9,14 +9,42 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db
+      - mongodb
+    networks:
+      - backend_net
+      - frontend_net
 
-  db:
+  mongodb:
     image: mongo:4.4.5-bionic
     restart: always
     env_file:
       - env_data.env
     volumes:
-      - .mongo_data:/data/db
+      - /srv/mongo_data:/data/db
+    command: --quiet
     ports:
       - 37017:27017
+    networks:
+      - backend_net
+
+  rproxy:
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - .nginx/nginxdata:/var/log/nginx
+    depends_on:
+      - backend
+    networks:
+      - frontend_net
+
+networks:
+  frontend_net:
+    driver: bridge
+  backend_net:
+    driver: bridge
